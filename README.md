@@ -1,5 +1,5 @@
-** REST API Homework ** 
-** by Joan Tubungbanua **
+**REST API Homework** 
+**by Joan Tubungbanua**
 
 
 Through this assignment, I was able to figure out the right endpoints in order to successfuly 
