@@ -25,9 +25,9 @@ if (process.env.NODE_ENV != 'test')
 {
 	(async () => {
 		await listAuthenicatedUserRepos();
-		await listBranches(userId, "SSW345_NodeLab");
-		//await createRepo(userId,newrepo);
-		//await createIssue(userId, repo, issue);
+		//await listBranches(userId, "SSW345_NodeLab");
+		await createRepo(userId, "testing_apiPractice");
+		//await createIssue(userId, "apiPractice", "idk");
 		//await enableWikiSupport(userId,repo);
 
 	})()
@@ -125,12 +125,21 @@ async function listBranches(owner,repo)
 // 2. Write code to create a new repo
 async function createRepo(owner,repo)
 {
-	let options = getDefaultOptions("/", "POST");
+	let options = getDefaultOptions(`/user/repos`, "POST");
+	options.json = {name: repo}
+
 
 	// Send a http request to url and specify a callback that will be called upon its return.
 	return new Promise(function(resolve, reject)
 	{
 		request(options, function (error, response, body) {
+
+			if ( error )
+			{
+				console.log( chalk.red( error ));
+				reject(error);
+				return; //terminate execution
+			}
 
 			resolve( response.statusCode );
 
@@ -141,12 +150,20 @@ async function createRepo(owner,repo)
 // 3. Write code for creating an issue for an existing repo.
 async function createIssue(owner,repo, issueName, issueBody)
 {
-	let options = getDefaultOptions("/", "POST");
+	let options = getDefaultOptions(`/repos/${owner}/${repo}/issues`, "POST");
+	options.json = {title: issueName, body: issueBody}
 
 	// Send a http request to url and specify a callback that will be called upon its return.
 	return new Promise(function(resolve, reject)
 	{
 		request(options, function (error, response, body) {
+
+			if(error)
+			{
+				console.log( chalk.red( error ));
+				reject(error);
+				return; //Terminate Execution
+			}
 
 			resolve( response.statusCode );
 
@@ -157,14 +174,21 @@ async function createIssue(owner,repo, issueName, issueBody)
 // 4. Write code for editing a repo to enable wiki support.
 async function enableWikiSupport(owner,repo)
 {
-	let options = getDefaultOptions("/", "PATCH");
+	let options = getDefaultOptions(`/repos/${owner}/${repo}`, "PATCH");
+	options.json = {has_wiki: true}
 
 	// Send a http request to url and specify a callback that will be called upon its return.
 	return new Promise(function(resolve, reject)
 	{
 		request(options, function (error, response, body) {
+			if ( error )
+			{ 
+				console.log( chalk.red(error));
+				reject(error);
+				return;
+			}
 
-			resolve( JSON.parse(body) );
+			resolve( JSON.parse(JSON.stringify(body)) );
 		});
 	});	
 }
